@@ -112,6 +112,8 @@ const NavMenuListItem = ({
       <NavigationMenuLink asChild>
         <a
           href={href}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex select-none flex-col gap-y-2 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
           <div className="flex items-center gap-x-2">
