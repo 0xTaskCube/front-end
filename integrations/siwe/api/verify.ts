@@ -6,8 +6,6 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { SERVER_SESSION_SETTINGS } from "@/lib/session"
 
-const admins = env.APP_ADMINS?.split(",") || []
-
 const verifySchema = z.object({
   signature: z.string(),
   message: z.object({
@@ -35,9 +33,8 @@ export async function POST(req: Request) {
       })
     session.siwe = fields
 
-    if (admins.includes(fields.address)) {
-      session.isAdmin = true
-    }
+    // 删除了 admins 相关的部分
+
     await session.save()
 
     if (env.DATABASE_URL) {
