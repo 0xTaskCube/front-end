@@ -54,7 +54,7 @@ export const turboIntegrations = {
   // },
   etherscan: {
     name: "Etherscan",
-    href: "/integration/etherscan",
+    href: "https://etherscan.io",
     url: "https://etherscan.io",
     description:
       "Etherscan is the leading block explorer and search, API & analytics platform for Ethereum.",
@@ -94,7 +94,7 @@ export const turboIntegrations = {
   // },
   openai: {
     name: "OpenAI",
-    href: "/integration/openai",
+    href: "https://www.openai.com/",
     url: "https://www.openai.com/",
     description:
       "OpenAI offers AI models designed for advanced natural language processing.",
@@ -113,7 +113,7 @@ export const turboIntegrations = {
   // },
   connext: {
     name: "Connext",
-    href: "/integration/connext",
+    href: "#",
     url: "https://docs.connext.network/",
     description:
       "Connext is a modular protocol for securely passing funds and data between chains.",
@@ -121,67 +121,10 @@ export const turboIntegrations = {
     imgDark: "/integrations/connext.png",
     category: "protocols",
   },
-  // gelato: {
-  //   name: "Gelato",
-  //   href: "/integration/gelato",
-  //   url: "https://docs.gelato.network/",
-  //   description:
-  //     "Enabling developers to create augmented smart contracts that are automated, gasless & off-chain aware",
-  //   imgLight: "/integrations/gelato-light.svg",
-  //   imgDark: "/integrations/gelato-light.svg",
-  //   category: "protocols",
-  // },
-  // push_protocol: {
-  //   name: "Push Protocol",
-  //   href: "/integration/push-protocol",
-  //   url: "https://push.org/",
-  //   description:
-  //     "Push Protocol is a web3 communication network, enabling cross-chain notifications and messaging for dapps, wallets, and services.",
-  //   imgLight: "/integrations/push.svg",
-  //   imgDark: "/integrations/push.svg",
-  //   category: "protocols",
-  // },
-  // moralis: {
-  //   name: "Moralis",
-  //   href: "/integration/moralis",
-  //   url: "https://docs.moralis.io/",
-  //   description:
-  //     "Moralis provides a complete end-to-end blockchain application development platform.",
-  //   imgLight: "/integrations/moralis.png",
-  //   imgDark: "/integrations/moralis.png",
-  //   category: "services",
-  // },
-  // aave: {
-  //   name: "Aave",
-  //   href: "/integration/aave",
-  //   url: "https://docs.aave.com/hub/",
-  //   description: "Aave is a decentralized non-custodial liquidity protocol.",
-  //   imgLight: "/integrations/aave.png",
-  //   imgDark: "/integrations/aave.png",
-  //   category: "protocols",
-  // },
-  // arweave: {
-  //   name: "Arweave",
-  //   href: "/integration/arweave",
-  //   url: "https://arwiki.arweave.dev",
-  //   description:
-  //     "Arweave is the first protocol that enables permanent data storage. Its design allows anyone to preserve data forever with just a single, one-time fee.",
-  //   imgLight: "/integrations/arweave-light.png",
-  //   imgDark: "/integrations/arweave-dark.png",
-  //   category: "protocols",
-  // },
-  // lensProtocol: {
-  //   name: "Lens Protocol",
-  //   href: "/integration/lens-protocol",
-  //   url: "https://www.lens.xyz/",
-  //   description: "Lens Protocol is the social layer for Web3",
-  //   imgLight: "/integrations/lensprotocol-light.svg",
-  //   imgDark: "/integrations/lensprotocol-dark.svg",
-  //   category: "protocols",
-  // },
+  
   gitcoinPassport: {
     name: "Gitcoin Passport",
-    href: "/integration/gitcoin-passport",
+    href: "#",
     url: "https://docs.passport.gitcoin.co/overview/introducing-gitcoin-passport",
     description:
       "Gitcoin Passport is an identity verification application. It enables you to collect verifiable credentials that prove your identity and trustworthiness without exposing personally identifying information.",
@@ -191,7 +134,7 @@ export const turboIntegrations = {
   },
   defiLlama: {
     name: "DefiLlama",
-    href: "/integration/defi-llama",
+    href: "#",
     url: "https://defillama.com/docs/api",
     description: "Open and transparent DeFi analytics. ",
     imgLight: "/integrations/defi-llama.png",

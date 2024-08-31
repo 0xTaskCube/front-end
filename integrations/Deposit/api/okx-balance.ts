@@ -2,19 +2,28 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import crypto from 'crypto';
 import https from 'https';
 
-export const GET = (req: NextApiRequest, res: NextApiResponse) => {
+export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
+  const method = req.method || 'GET';
+
+  if (method !== 'GET') {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${method} Not Allowed`);
+    return;
+  }
+
   const apiKey = process.env.OKX_API_KEY;
   const secretKey = process.env.OKX_SECRET_KEY;
   const passphrase = process.env.OKX_PASSPHRASE;
 
-  // 当前的时间戳
+  if (!apiKey || !secretKey || !passphrase) {
+    res.status(500).json({ error: 'Missing OKX API credentials' });
+    return;
+  }
+
   const timestamp = new Date().toISOString();
+  const signature = generateSignature(timestamp, method, '/api/v5/account/balance', secretKey);
 
-  // 生成签名
-  const signature = generateSignature(timestamp, 'GET', '/api/v5/account/balance');
-
-  // 配置请求选项
-  const options = {
+  const options: https.RequestOptions = {
     hostname: 'www.okx.com',
     path: `/api/v5/account/balance?ccy=BTC`,
     method: 'GET',
@@ -26,31 +35,39 @@ export const GET = (req: NextApiRequest, res: NextApiResponse) => {
     },
   };
 
-  // 发送 HTTPS 请求
-  const request = https.request(options, (response) => {
-    let data = '';
-    response.on('data', (chunk) => {
-      data += chunk;
-    });
-    response.on('end', () => {
-      res.status(200).json(JSON.parse(data));
-    });
-  });
-
-  // 处理请求错误
-  request.on('error', (error) => {
-    console.error(`Request error: ${error.message}`);
+  try {
+    const data = await makeRequest(options);
+    res.status(200).json(JSON.parse(data));
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`Request error: ${errorMessage}`);
     res.status(500).json({ error: 'Internal Server Error' });
-  });
-
-  // 结束请求
-  request.end();
+  }
 };
 
-// 签名生成函数
-function generateSignature(timestamp: string, method: string, requestPath: string, body: string = '') {
+function generateSignature(timestamp: string, method: string, requestPath: string, secretKey: string, body: string = ''): string {
   const prehashString = `${timestamp}${method}${requestPath}${body}`;
-  const hmac = crypto.createHmac('sha256', process.env.OKX_SECRET_KEY as string);
+  const hmac = crypto.createHmac('sha256', secretKey);
   hmac.update(prehashString);
   return hmac.digest('base64');
+}
+
+function makeRequest(options: https.RequestOptions): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const request = https.request(options, (response) => {
+      let data = '';
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+      response.on('end', () => {
+        resolve(data);
+      });
+    });
+
+    request.on('error', (error) => {
+      reject(error);
+    });
+
+    request.end();
+  });
 }

@@ -1,2 +1,3 @@
-export { GET } from '@/integrations/Deposit/api/okx-balance';
+import { GET } from '@/integrations/Deposit/api/okx-balance';
+
 

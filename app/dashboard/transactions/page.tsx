@@ -1,12 +1,11 @@
 "use client"
 
+import { data } from "tailwindcss/defaultTheme"
 import { useAccount } from "wagmi"
 
 import { useUser } from "@/lib/hooks/use-user"
 import { IsWalletConnected } from "@/components/shared/is-wallet-connected"
 import { IsWalletDisconnected } from "@/components/shared/is-wallet-disconnected"
-import { TransactionsTable } from "@/integrations/etherscan/components/transactions-table"
-import { useEtherscanAccountTransactions } from "@/integrations/etherscan/hooks/use-etherscan-account-transactions"
 import { ButtonSIWELogin } from "@/integrations/siwe/components/button-siwe-login"
 import { IsSignedIn } from "@/integrations/siwe/components/is-signed-in"
 import { IsSignedOut } from "@/integrations/siwe/components/is-signed-out"
@@ -41,18 +40,6 @@ export default function PageDashboardTransactions() {
 const Table = () => {
   const { user } = useUser()
   const { chain } = useAccount()
-  const { isLoading, data } = useEtherscanAccountTransactions(
-    {
-      chainId: chain?.id || 1,
-    },
-    [user]
-  )
 
-  return (
-    <div className="w-full">
-      {!isLoading && (
-        <TransactionsTable className="w-full" data={data?.transactions} />
-      )}
-    </div>
-  )
+  return <div className="w-full"></div>
 }

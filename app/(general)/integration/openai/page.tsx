@@ -12,7 +12,6 @@ import {
 } from "@/components/layout/page-header"
 import { PageSection } from "@/components/layout/page-section"
 import { LightDarkImage } from "@/components/shared/light-dark-image"
-import { FormOpenAIPrompt } from "@/integrations/openai/components/form-openai-prompt"
 
 export default function OpenAIPage() {
   return (
@@ -42,9 +41,7 @@ export default function OpenAIPage() {
           </Link>
         </PageHeaderCTA>
       </PageHeader>
-      <PageSection>
-        <FormOpenAIPrompt />
-      </PageSection>
+      <PageSection></PageSection>
     </div>
   )
 }
