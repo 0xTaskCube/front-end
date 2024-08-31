@@ -20,6 +20,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { LightDarkImage } from "@/components/shared/light-dark-image"
 
+import { WalletConnect } from "../blockchain/wallet-connect"
 import { LinkComponent } from "../shared/link-component"
 
 export function MainNav() {
@@ -27,9 +28,9 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
         <LightDarkImage
-          LightImage="/logo-dark.png"
-          DarkImage="/logo-light.png"
-          alt="TurboETH"
+          LightImage="/logo.png"
+          DarkImage="/logo.png"
+          alt="TaskCube"
           className="rounded-full"
           height={32}
           width={32}
@@ -50,7 +51,7 @@ function MainNavMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Integrations</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
           <NavigationMenuContent className="max-h-[768px] overflow-y-scroll">
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[768px] lg:grid-cols-3">
               {integrationCategories.map((category) => (
@@ -80,7 +81,7 @@ function MainNavMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <LinkComponent href="https://docs.turboeth.xyz/overview">
+          <LinkComponent href="#">
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               <span>Documentation</span>
             </NavigationMenuLink>

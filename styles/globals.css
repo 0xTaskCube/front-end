@@ -6,6 +6,16 @@
   Use HSL values for theming with format `X X% X%`
   Note: do not include opacity value.
  */
+/* 适用于所有浏览器 */
+.hide-scrollbar {
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+/* 对 Webkit 内核浏览器（Chrome、Safari、Edge）隐藏滚动条 */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 @layer base {
   :root {
     /* Default background color of <body />...etc */

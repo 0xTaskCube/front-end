@@ -12,23 +12,25 @@ interface SiteConfig {
     discord: string
     twitter: string
     github: string
+    telegram:string
   }
 }
 
-export const SITE_CANONICAL = "https://turboeth.xyz"
+export const SITE_CANONICAL = "#"
 
 export const siteConfig: SiteConfig = {
-  name: "TurboETH",
-  title: "TurboETH - Web3 App Template",
+  name: "TaskCube",
+  title: "TaskCube - Web3 Task",
   emoji: "⚡",
   description:
-    "Start building full-stack Web3 applications in minutes with TurboETH.",
+    "Use TaskCube to complete tasks and get rewards.",
   localeDefault: "en",
   links: {
-    docs: "https://docs.turboeth.xyz/overview",
-    discord: "https://discord.gg/U4jy7Xfh76",
-    twitter: "https://twitter.com/district_labs",
-    github: "https://github.com/turbo-eth/template-web3-app",
+    docs: "#",
+    discord: "#",
+    twitter: "#",
+    github: "#",
+    telegram: "#"
   },
 }
 

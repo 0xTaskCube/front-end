@@ -6,6 +6,8 @@ import Balancer from "react-wrap-balancer"
 import { cn } from "@/lib/utils"
 import { fadeDownVariant, staggerContainer } from "@/lib/utils/motion"
 
+import { WalletConnect } from "../blockchain/wallet-connect"
+
 interface MotionHeaderProps extends MotionProps {
   className?: string
   children?: React.ReactNode

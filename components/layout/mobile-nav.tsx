@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link, { LinkProps } from "next/link"
 import { useRouter } from "next/navigation"
+import router from "next/router"
 import {
   integrationCategories,
   turboIntegrations,
@@ -24,6 +25,7 @@ import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { LightDarkImage } from "@/components/shared/light-dark-image"
 
+import { WalletConnect } from "../blockchain/wallet-connect"
 import { ModeToggle } from "../shared/mode-toggle"
 
 export function MobileNav() {
@@ -34,9 +36,9 @@ export function MobileNav() {
       <div className="flex w-full items-center justify-between md:hidden">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <LightDarkImage
-            LightImage="/logo-dark.png"
-            DarkImage="/logo-light.png"
-            alt="TurboETH"
+            LightImage="/logo.png"
+            DarkImage="/logo.png"
+            alt="TaskCube"
             className="rounded-full"
             height={32}
             width={32}
@@ -50,12 +52,12 @@ export function MobileNav() {
             variant="ghost"
             className="ml-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
           >
-            <LuMenu className="h-5 w-5" />
+            <LuMenu className="h-7 w-7" />
             <span className="sr-only">Toggle Menu</span>
           </Button>
         </SheetTrigger>
       </div>
-      <SheetContent side="right" className="pr-0">
+      <SheetContent side="right" className="pr-0 ">
         <div className="flex items-center gap-x-4">
           <MobileLink
             href="/"
@@ -63,8 +65,8 @@ export function MobileNav() {
             onOpenChange={setOpen}
           >
             <LightDarkImage
-              LightImage="/logo-dark.png"
-              DarkImage="/logo-light.png"
+              LightImage="/logo.png"
+              DarkImage="/logo.png"
               alt="TurboETH"
               height={32}
               width={32}
@@ -77,7 +79,7 @@ export function MobileNav() {
             <Accordion type="single" collapsible className="mx-auto w-full">
               <AccordionItem value="integrations">
                 <AccordionTrigger className="text-base font-medium">
-                  Integrations
+                  Tools
                 </AccordionTrigger>
                 <AccordionContent>
                   <ul className="flex flex-col gap-2">
@@ -134,10 +136,7 @@ export function MobileNav() {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-            <Link
-              href="https://docs.turboeth.xyz/overview"
-              className="font-medium"
-            >
+            <Link href="#" className="font-medium">
               Documentation
             </Link>
             <Separator />

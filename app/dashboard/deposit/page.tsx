@@ -1,5 +1,6 @@
 "use client"
 
+import { DepositForm } from "components/blockchain/depositForm"
 import { motion } from "framer-motion"
 
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/config/design"
@@ -11,16 +12,16 @@ export default function PageDashboardAccount() {
   return (
     <motion.div
       animate="show"
-      className="flex h-full w-full flex-col items-start justify-start p-6"
+      className="flex  w-full flex-col items-start justify-start py-6 md:p-6 "
       initial="hidden"
       variants={FADE_DOWN_ANIMATION_VARIANTS}
       viewport={{ once: true }}
       whileInView="show"
     >
       <IsWalletConnected>
-        <h1 className="mb-6 text-3xl font-bold">Hello JenGuan</h1>
-        <p className="mb-6 text-sm text-gray-500">Welcome Back!</p>
-        <div className="mb-6 flex w-full flex-row justify-between space-x-4">
+        <h1 className="mb-6 text-3xl font-bold">充值/记录</h1>
+        {/* <p className="mb-6 text-sm text-gray-500">Welcome Back!</p> */}
+        {/* <div className="mb-6 flex w-full flex-row justify-between space-x-4">
           <AccountCard title="Savings Account" amount={0} />
           <AccountCard title="Investments Account" amount={0} />
           <AccountCard title="Miscellaneous Account" amount={0} />
@@ -37,13 +38,16 @@ export default function PageDashboardAccount() {
               <br />
               Add your first entry of the month.
             </p>
-          </Card>
-          {/* <Card className="w-1/2 p-6">
+          </Card> */}
+        {/* <Card className="w-1/2 p-6">
             <h3 className="mb-2 text-xl font-semibold">August Overview</h3>
             <p className="text-gray-500">
               Start adding entries to get more insights.
             </p>
           </Card> */}
+        {/* </div> */}
+        <div className=" w-full font-bold ">
+          <DepositForm />
         </div>
       </IsWalletConnected>
       <IsWalletDisconnected>

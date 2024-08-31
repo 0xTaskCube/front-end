@@ -1,0 +1,1 @@
+export { POST } from '@/integrations/Deposit/api/createDepositAddress';

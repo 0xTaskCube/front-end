@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa"
+import { FaDiscord, FaGithub, FaTelegramPlane, FaTwitter } from "react-icons/fa"
 
 import { menuAdmin } from "@/config/menu-admin"
 import { menuDashboard } from "@/config/menu-dashboard"
@@ -20,25 +20,25 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
         <aside className="fixed top-20 z-30 -ml-2 hidden h-[calc(100vh-5rem)] w-full shrink-0 justify-between overflow-y-auto border-r md:sticky md:flex md:flex-col">
           <ScrollArea className="py-6 pr-6 lg:py-8">
-            <h3 className="text-lg font-normal">User</h3>
+            <h3 className="text-lg font-bold">Dashboard</h3>
             <SidebarNav items={menuDashboard} />
             <hr className="my-6 border-t border-muted" />
-            <h3 className="text-lg font-normal">Admin</h3>
+            <h3 className="text-lg font-bold">Admin</h3>
             <SidebarNav items={menuAdmin} />
           </ScrollArea>
           <footer className="fixed bottom-6 flex flex-col border-t pr-2 pt-4">
             <h3 className="text-sm font-semibold">{siteConfig.title}</h3>
             <a
-              href="https://districtlabs.com"
+              href="#"
               target="_blank"
               rel="noreferrer"
               className="w-fit py-2 text-xs text-primary underline-offset-4 hover:underline"
             >
-              Built by District Labs
+              Built by TaskCube Labs
             </a>
             <div className="mt-2 flex items-center space-x-2">
-              <Link href={siteConfig.links.github}>
-                <FaGithub />
+              <Link href={siteConfig.links.telegram}>
+                <FaTelegramPlane />
               </Link>
               <Link href={siteConfig.links.twitter}>
                 <FaTwitter />
@@ -51,7 +51,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </aside>
         <main className="flex w-full flex-col overflow-hidden">{children}</main>
       </div>
-      <div className="fixed bottom-6 right-6">
+      <div className="fixed bottom-4 right-4">
         <WalletConnect />
       </div>
     </div>

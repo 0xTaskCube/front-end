@@ -9,6 +9,8 @@ import { MainNav } from "@/components/layout/main-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { ModeToggle } from "@/components/shared/mode-toggle"
 
+import { WalletConnect } from "../blockchain/wallet-connect"
+
 export function SiteHeader() {
   const scrolled = useScroll(0)
 
@@ -19,7 +21,7 @@ export function SiteHeader() {
         scrolled && "bg-background/50 "
       )}
     >
-      <div className="container flex h-20 items-center">
+      <div className="flex h-20 items-center px-6">
         <MainNav />
         <MobileNav />
         <div className="hidden flex-1 items-center justify-between space-x-2 md:flex md:justify-end">

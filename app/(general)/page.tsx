@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { FaDiscord, FaGithub } from "react-icons/fa"
+import { FaGithub, FaTelegramPlane } from "react-icons/fa"
 import { LuBook } from "react-icons/lu"
 
 import { siteConfig } from "@/config/site"
@@ -20,13 +20,13 @@ export default function HomePage() {
     <div className="container relative mt-20 px-0">
       <PageHeader className="pb-8">
         <Image
-          src="/logo-gradient.png"
+          src="/logo.png"
           alt="TurboETH Logo"
           width={80}
           height={80}
           className="h-20 w-20 rounded-2xl"
         />
-        <PageHeaderHeading>Build Web3 in Turbo&nbsp;Mode</PageHeaderHeading>
+        <PageHeaderHeading>Build Web3 in Task&nbsp;Cube</PageHeaderHeading>
         <PageHeaderDescription>{siteConfig.description}</PageHeaderDescription>
         <PageHeaderCTA>
           <Link
@@ -39,15 +39,15 @@ export default function HomePage() {
             Docs
           </Link>
           <Link
-            href={siteConfig.links.github}
+            href={siteConfig.links.telegram}
             target="_blank"
             rel="noreferrer noopener"
             className={buttonVariants({ variant: "secondary" })}
           >
-            <FaGithub className="mr-2 h-4 w-4" />
-            Github
+            <FaTelegramPlane className="mr-2 h-4 w-4" />
+            Telegram
           </Link>
-          <Link
+          {/* <Link
             href={siteConfig.links.discord}
             target="_blank"
             rel="noreferrer noopener"
@@ -58,13 +58,11 @@ export default function HomePage() {
           >
             <FaDiscord className="mr-2 h-4 w-4" />
             Discord
-          </Link>
+          </Link> */}
         </PageHeaderCTA>
         <PageHeaderCTA>
-          <CopyButton value="pnpm create turbo-eth@latest">
-            <span className="text-xs sm:text-base">
-              pnpm create turbo-eth@latest
-            </span>
+          <CopyButton value="@TaskCube_official">
+            <span className="text-xs sm:text-base">@TaskCube_official</span>
           </CopyButton>
         </PageHeaderCTA>
       </PageHeader>
