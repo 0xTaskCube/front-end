@@ -16,7 +16,7 @@ const nextConfig = {
       "images.unsplash.com",
       "cloudflare-ipfs.com",
       "gateway.ipfs.io",
-      "api.qrserver.com", // 添加此行
+      "api.qrserver.com",
     ],
   },
   webpack: (config) => {
