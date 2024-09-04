@@ -2,17 +2,11 @@ import https from 'https';
 import crypto from 'crypto';
 import querystring from 'querystring';
 
-console.log('API Key:', process.env.OKX_API_KEY);
-console.log('Secret Key:', process.env.OKX_SECRET_KEY);
-console.log('Passphrase:', process.env.OKX_PASSPHRASE);
-console.log('Project ID:', process.env.OKX_PROJECT_ID);
-
-// 定义 API 凭证和项目 ID
 const apiConfig = {
   apiKey: process.env.OKX_API_KEY || '',
   secretKey: process.env.OKX_SECRET_KEY || '',
   passphrase: process.env.OKX_PASSPHRASE || '',
-  project: process.env.OKX_PROJECT_ID || '' // 此处仅适用于 WaaS APIs
+  project: process.env.OKX_PROJECT_ID || '' 
 };
 
 function preHash(timestamp: string, method: string, requestPath: string, params?: Record<string, any>): string {
@@ -33,13 +27,13 @@ function sign(message: string, secretKey: string): string {
 }
 
 function createSignature(method: string, requestPath: string, params?: Record<string, any>) {
-  const timestamp = new Date().toISOString().slice(0, -5) + 'Z';
+  const timestamp = new Date().toISOString().slice(0, -1); 
   const message = preHash(timestamp, method, requestPath, params);
   const signature = sign(message, apiConfig.secretKey);
   return { signature, timestamp };
 }
 
-export function sendGetRequest(requestPath: string, params?: Record<string, any>) {
+export async function sendGetRequest(requestPath: string, params?: Record<string, any>) {
   const { signature, timestamp } = createSignature('GET', requestPath, params);
 
   const headers = {
@@ -47,7 +41,7 @@ export function sendGetRequest(requestPath: string, params?: Record<string, any>
     'OK-ACCESS-SIGN': signature,
     'OK-ACCESS-TIMESTAMP': timestamp,
     'OK-ACCESS-PASSPHRASE': apiConfig.passphrase,
-    'OK-ACCESS-PROJECT': apiConfig.project // 这仅适用于 WaaS APIs
+    'OK-ACCESS-PROJECT': apiConfig.project 
   };
 
   const options = {
@@ -64,7 +58,11 @@ export function sendGetRequest(requestPath: string, params?: Record<string, any>
         data += chunk;
       });
       res.on('end', () => {
-        resolve(JSON.parse(data));
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          resolve(data);
+        }
       });
     });
 
@@ -76,7 +74,7 @@ export function sendGetRequest(requestPath: string, params?: Record<string, any>
   });
 }
 
-export function sendPostRequest(requestPath: string, params?: Record<string, any>) {
+export async function sendPostRequest(requestPath: string, params?: Record<string, any>) {
   const { signature, timestamp } = createSignature('POST', requestPath, params);
 
   const headers = {
@@ -84,7 +82,7 @@ export function sendPostRequest(requestPath: string, params?: Record<string, any
     'OK-ACCESS-SIGN': signature,
     'OK-ACCESS-TIMESTAMP': timestamp,
     'OK-ACCESS-PASSPHRASE': apiConfig.passphrase,
-    'OK-ACCESS-PROJECT': apiConfig.project, // 这仅适用于 WaaS APIs
+    'OK-ACCESS-PROJECT': apiConfig.project,
     'Content-Type': 'application/json'
   };
 
@@ -102,7 +100,11 @@ export function sendPostRequest(requestPath: string, params?: Record<string, any
         data += chunk;
       });
       res.on('end', () => {
-        resolve(JSON.parse(data));
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          resolve(data);
+        }
       });
     });
 

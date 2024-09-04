@@ -9,7 +9,7 @@ import {
 } from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
 import { ScrollArea } from "@radix-ui/react-scroll-area"
-import { createEthWallet } from "components/blockchain/generateWallet"
+import { useAccount } from "wagmi" // 连接钱包的 Hook
 
 import { Card } from "@/components/ui/card"
 
@@ -41,6 +41,12 @@ const coin: Coin[] = [
     avatar:
       "https://pbs.twimg.com/profile_images/1522267869920247809/uFYLh_nU_400x400.png",
   },
+  {
+    id: 2,
+    name: "USDC",
+    avatar:
+      "https://pbs.twimg.com/profile_images/1522267869920247809/uFYLh_nU_400x400.png",
+  },
 ]
 
 const netWork: Network[] = [
@@ -59,24 +65,42 @@ const netWork: Network[] = [
 
 export function DepositForm() {
   const [selected, setSelected] = useState(coin[0]) // 确保有默认值
-  const [selectedNetwork, setSelectedNetwork] = useState(netWork[0]) // 确保有默认值
+  const [selectedNetwork, setSelectedNetwork] = useState(netWork[1]) // 确保有默认值
   const [showDepositHistory, setShowDepositHistory] = useState(false)
   const [depositAddress, setDepositAddress] = useState("")
   const [qrCodeUrl, setQrCodeUrl] = useState("")
+  const { address } = useAccount() // 当前连接的钱包地址
 
   useEffect(() => {
-    async function generateWalletAndAddress() {
+    async function fetchOrCreateDepositAddress() {
+      if (!address) return // 确保钱包地址存在
+
       try {
-        const { address } = await createEthWallet() // 生成钱包和地址
-        setDepositAddress(address) // 更新到组件状态中
-        setQrCodeUrl(address) // 假设二维码内容就是充值地址
+        const response = await fetch("/api/app/userMongodb", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            walletAddress: address,
+            network: selectedNetwork.name,
+          }),
+        })
+
+        const data = await response.json()
+        if (response.ok) {
+          setDepositAddress(data.depositAddress)
+          setQrCodeUrl(data.depositAddress) // 假设二维码内容就是充值地址
+        } else {
+          console.error(data.message)
+        }
       } catch (error) {
         console.error("生成钱包地址时出错:", error)
       }
     }
 
-    void generateWalletAndAddress() // 调用生成钱包和地址的函数
-  }, [selected, selectedNetwork])
+    void fetchOrCreateDepositAddress() // 调用函数以获取或生成充值地址
+  }, [address, selectedNetwork])
 
   // 复制地址到剪贴板
   const handleCopyAddress = async () => {
@@ -98,7 +122,6 @@ export function DepositForm() {
       progress: "19/19",
       status: "Confirmed",
     },
-    // ... 其他元素
   ]
 
   return (
@@ -134,28 +157,27 @@ export function DepositForm() {
                 加密货币
               </Label>
               <div className="relative mt-2">
-                {selected && (
-                  <ListboxButton className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 sm:text-sm sm:leading-6">
-                    <span className="flex items-center">
-                      <img
-                        alt=""
-                        src={selected.avatar}
-                        className="h-5 w-5 shrink-0 rounded-full"
-                      />
-                      <span className="ml-3 block truncate">
-                        {selected.name}
-                      </span>
-                    </span>
-                    <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                      <ChevronUpDownIcon
-                        aria-hidden="true"
-                        className="h-5 w-5 text-gray-400"
-                      />
-                    </span>
-                  </ListboxButton>
-                )}
+                <ListboxButton className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2  sm:text-sm sm:leading-6">
+                  <span className="flex items-center">
+                    <img
+                      alt=""
+                      src={selected.avatar}
+                      className="h-5 w-5 shrink-0 rounded-full"
+                    />
+                    <span className="ml-3 block truncate">{selected.name}</span>
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                    <ChevronUpDownIcon
+                      aria-hidden="true"
+                      className="h-5 w-5 text-gray-400"
+                    />
+                  </span>
+                </ListboxButton>
 
-                <ListboxOptions className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions
+                  transition
+                  className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm"
+                >
                   {coin.map((name) => (
                     <ListboxOption
                       key={name.id}
@@ -172,7 +194,6 @@ export function DepositForm() {
                           {name.name}
                         </span>
                       </div>
-
                       <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-800 group-data-[focus]:text-white [.group:not([data-selected])_&]:hidden">
                         <CheckIcon aria-hidden="true" className="h-5 w-5" />
                       </span>
@@ -184,33 +205,40 @@ export function DepositForm() {
           </div>
 
           <div className="mb-4">
-            <Listbox value={selectedNetwork} onChange={setSelectedNetwork}>
+            <Listbox
+              value={selectedNetwork}
+              onChange={(value) => {
+                setSelectedNetwork(value) // 更新状态
+                console.log("Selected Network:", value) // 打印出当前选择的网络
+              }}
+            >
               <Label className="block text-sm font-medium leading-6 text-gray-900">
                 网络
               </Label>
               <div className="relative mt-2">
-                {selectedNetwork && (
-                  <ListboxButton className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 sm:text-sm sm:leading-6">
-                    <span className="flex items-center">
-                      <img
-                        alt=""
-                        src={selectedNetwork.avatar}
-                        className="h-5 w-5 shrink-0 rounded-full"
-                      />
-                      <span className="ml-3 block truncate">
-                        {selectedNetwork.name}
-                      </span>
+                <ListboxButton className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 sm:text-sm sm:leading-6">
+                  <span className="flex items-center">
+                    <img
+                      alt=""
+                      src={selectedNetwork.avatar}
+                      className="h-5 w-5 shrink-0 rounded-full"
+                    />
+                    <span className="ml-3 block truncate">
+                      {selectedNetwork.name}
                     </span>
-                    <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                      <ChevronUpDownIcon
-                        aria-hidden="true"
-                        className="h-5 w-5 text-gray-400"
-                      />
-                    </span>
-                  </ListboxButton>
-                )}
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                    <ChevronUpDownIcon
+                      aria-hidden="true"
+                      className="h-5 w-5 text-gray-400"
+                    />
+                  </span>
+                </ListboxButton>
 
-                <ListboxOptions className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions
+                  transition
+                  className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                >
                   {netWork.map((netName) => (
                     <ListboxOption
                       key={netName.id}
@@ -227,7 +255,6 @@ export function DepositForm() {
                           {netName.name}
                         </span>
                       </div>
-
                       <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-800 group-data-[focus]:text-white [.group:not([data-selected])_&]:hidden">
                         <CheckIcon aria-hidden="true" className="h-5 w-5" />
                       </span>
@@ -263,13 +290,13 @@ export function DepositForm() {
           <div className="mb-4">
             <p className="text-center text-xs text-gray-500">
               此地址仅适用于 {selected.name} 网络上的 {selectedNetwork.name}
-              。不要发送任何其他加密货币, 否则可能会丢失且无法找回。
+              。不要发送任何其他加密货币，否则可能会丢失且无法找回。
             </p>
           </div>
 
           <button
             onClick={handleCopyAddress}
-            className="w-full rounded-md bg-gray-800 py-2 text-white transition duration-300 hover:bg-gray-900 dark:bg-white dark:text-black"
+            className="w-full rounded-md bg-gray-800 py-2 text-white transition duration-300 hover:bg-gray-900"
           >
             复制地址
           </button>
