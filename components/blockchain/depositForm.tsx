@@ -11,6 +11,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
 import { ScrollArea } from "@radix-ui/react-scroll-area"
 import { useAccount } from "wagmi" // 连接钱包的 Hook
 
+import { getDepositHistory } from "@/lib/utils/okxApiHelper"
 import { Card } from "@/components/ui/card"
 
 interface Coin {
@@ -30,8 +31,37 @@ interface DepositHistory {
   address: string
   coin: string
   amount: string
-  progress: string
   status: string
+  transactionHash: string
+}
+
+interface ApiResponse {
+  data: {
+    blockTime: number
+    toAddr: string
+    txAmount: string
+    txStatus: string
+    txhash: string
+  }[]
+}
+interface TransactionItem {
+  blockTime: number
+  toAddr: string
+  txAmount: string
+  txStatus: string
+  txhash: string
+}
+
+interface ApiResponse {
+  data: TransactionItem[]
+}
+interface DepositRecord {
+  coin: string
+  time: string
+  address: string
+  amount: string
+  status: string
+  transactionHash: string
 }
 
 const coin: Coin[] = [
@@ -61,6 +91,12 @@ const netWork: Network[] = [
     name: "ERC20",
     avatar: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
   },
+  {
+    id: 3,
+    name: "Arbitrum One",
+    avatar:
+      "https://assets.coingecko.com/coins/images/16547/standard/arb.jpg?1721358242", //
+  },
 ]
 
 export function DepositForm() {
@@ -69,6 +105,7 @@ export function DepositForm() {
   const [showDepositHistory, setShowDepositHistory] = useState(false)
   const [depositAddress, setDepositAddress] = useState("")
   const [qrCodeUrl, setQrCodeUrl] = useState("")
+  const [depositHistory, setDepositHistory] = useState<DepositHistory[]>([])
   const { address } = useAccount() // 当前连接的钱包地址
 
   useEffect(() => {
@@ -99,8 +136,45 @@ export function DepositForm() {
       }
     }
 
-    void fetchOrCreateDepositAddress() // 调用函数以获取或生成充值地址
+    void fetchOrCreateDepositAddress() // 调用函数以获取或生成充值地址，使用 `void` 忽略 Promise 警告
   }, [address, selectedNetwork])
+
+  useEffect(() => {
+    async function fetchDepositHistory() {
+      if (!address) return // 确保钱包地址存在
+
+      try {
+        // 调用获取充值历史的 API
+        const response = await fetch(`/api/depositHistory?address=${address}`)
+
+        // 确保 response 是成功的并且是 JSON 格式
+        if (!response.ok) {
+          console.error("获取充值记录时出错:", await response.text())
+          return
+        }
+
+        const data = await response.json()
+
+        // 假设 API 返回的数据结构与您期望的格式相匹配
+        if (Array.isArray(data)) {
+          const history = data.map((item) => ({
+            time: new Date(item.timestamp).toLocaleString(),
+            address: item.toAddress,
+            coin: item.currency,
+            amount: item.amount,
+            status: item.status === "SUCCESS" ? "Confirmed" : "Pending",
+            transactionHash: item.txHash,
+          }))
+
+          setDepositHistory(history)
+        }
+      } catch (error) {
+        console.error("获取充值记录时出错:", error)
+      }
+    }
+
+    void fetchDepositHistory() // 调用函数以获取充值记录，忽略 Promise 警告
+  }, [address])
 
   // 复制地址到剪贴板
   const handleCopyAddress = async () => {
@@ -111,18 +185,6 @@ export function DepositForm() {
       console.error("复制地址失败:", error)
     }
   }
-
-  // 模拟充值记录数据
-  const depositHistory: DepositHistory[] = [
-    {
-      time: "2024/08/25 14:18:32",
-      address: "TCp5zzfJWxs7BXRQkCcabPBfqwZxBeyNM5",
-      coin: "TRX",
-      amount: "58.1032",
-      progress: "19/19",
-      status: "Confirmed",
-    },
-  ]
 
   return (
     <Card className="hide-scrollbar mx-auto w-full overflow-y-auto rounded-lg p-6 pb-4 shadow-lg">
@@ -329,7 +391,12 @@ export function DepositForm() {
                     <td className="hidden py-4 md:table-cell">
                       {record.address}
                       <br />
-                      <a href="#" className="mt-1 block text-green-600">
+                      <a
+                        href={`https://arbiscan.io/tx/${record.transactionHash}`}
+                        target="_blank"
+                        className="mt-1 block text-green-600"
+                        rel="noopener noreferrer"
+                      >
                         详情
                       </a>
                     </td>

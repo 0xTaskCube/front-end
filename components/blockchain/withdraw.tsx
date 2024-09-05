@@ -123,8 +123,6 @@ export function WithdrawForm() {
 
       {!showWithdrawHistory ? (
         <>
-          <h3 className="mb-6 text-lg font-semibold">提现</h3>
-
           <div className="mb-4">
             <Listbox value={selectedCoin} onChange={setSelectedCoin}>
               <Label className="block text-sm font-medium leading-6 text-gray-900">
